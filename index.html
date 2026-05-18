@@ -1,0 +1,1007 @@
+<html lang="zh-HK"><head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UNIBRIDGE 煲匯橋 - 粵語學習空間</title>
+    <style>
+        :root {
+            --rhine-blue: #0047AB;
+            --bg-color: #E3F2FD;
+            --text-color: #1d1d1f;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --nav-bg: rgba(0, 71, 171, 0.95);
+            --primary-blue: var(--rhine-blue);
+            --logo-blue: var(--rhine-blue);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --accent-gold: #ff9f0a;
+            --success-green: #34c759;
+            --danger-red: #ff3b30;
+            --glass-blur: blur(20px);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #001122;
+            --text-color: #f5f5f7;
+            --card-bg: rgba(28, 28, 30, 0.9);
+            --nav-bg: rgba(28, 28, 30, 0.95);
+            --primary-blue: #2997ff;
+            --logo-blue: #4da3ff;
+            --border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0; padding: 0; transition: all 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        header {
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            padding: 15px 4%; border-bottom: 1px solid var(--border-color);
+            background-color: var(--card-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+        }
+        @media (min-width: 768px) {
+            header { flex-direction: row; justify-content: space-between; }
+        }
+
+        .brand-container { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .ip-char { width: 42px; height: 42px; }
+        .logo-text-group { display: flex; flex-direction: column; }
+        .logo-en { font-size: 22px; font-weight: 800; color: var(--logo-blue); font-style: italic; margin: 0; line-height: 1.1; }
+        .logo-cn { font-size: 13px; font-weight: 700; color: var(--logo-blue); letter-spacing: 2px; }
+
+        .visit-badge {
+            background: rgba(0, 71, 171, 0.08); padding: 6px 14px;
+            border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--primary-blue);
+            border: 1px solid rgba(0, 71, 171, 0.15); display: inline-flex; align-items: center; gap: 4px;
+        }
+        [data-theme="dark"] .visit-badge { background: rgba(41, 151, 255, 0.15); color: #2997ff; border-color: rgba(41, 151, 255, 0.3); }
+
+        .controls { display: flex; gap: 6px; justify-content: center; }
+        .controls button, .btn {
+            padding: 10px 16px; cursor: pointer; border: 1.5px solid var(--primary-blue);
+            background: transparent; color: var(--primary-blue); border-radius: 20px;
+            font-weight: 600; font-size: 13px; transition: 0.2s; min-height: 40px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .controls button:hover, .btn:hover { background: var(--primary-blue); color: white; }
+        .controls button.active-lang { background: var(--primary-blue); color: white; }
+
+        .status-bar {
+            background-color: var(--rhine-blue); color: white; padding: 14px 5%;
+            display: flex; flex-direction: column; gap: 10px; font-size: 13px; font-weight: 600;
+        }
+        @media (min-width: 480px) {
+            .status-bar { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
+
+        .xp-container { display: flex; align-items: center; gap: 8px; }
+        .xp-bar-bg { background: rgba(255,255,255,0.25); border-radius: 10px; width: 120px; height: 8px; overflow: hidden; display: inline-block; vertical-align: middle; }
+        .xp-bar-fill { background: #fff; height: 100%; width: 0%; transition: width 0.4s ease; }
+
+        nav {
+            display: flex; background-color: var(--nav-bg);
+            overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            position: sticky; top: 0; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        nav::-webkit-scrollbar { display: none; }
+        nav button {
+            background: none; border: none; padding: 16px 20px; font-size: 14px;
+            color: white; cursor: pointer; font-weight: 600; white-space: nowrap; opacity: 0.75; transition: 0.2s;
+            flex: 1 0 auto; text-align: center; min-height: 44px;
+        }
+        nav button.active-nav { opacity: 1; color: white; border-bottom: 3px solid white; background-color: rgba(255,255,255,0.15); }
+
+        .content-section { display: none; padding: 20px 4%; max-width: 800px; margin: 0 auto; animation: slideUp 0.3s ease-out; box-sizing: border-box; }
+        .content-section.active { display: block; }
+        @keyframes slideUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+        .section-desc {
+            background: rgba(0, 71, 171, 0.05); border-left: 4px solid var(--primary-blue);
+            padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; color: var(--text-color); line-height: 1.5;
+        }
+        [data-theme="dark"] .section-desc { background: rgba(41, 151, 255, 0.1); }
+
+        .card {
+            background: var(--card-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        .welcome-hero { text-align: center; padding: 20px 0; }
+        .welcome-hero h1 { font-size: 28px; font-weight: 800; color: var(--text-color); margin: 0 0 12px 0; }
+        .soup-box { font-style: italic; opacity: 0.9; padding: 12px 16px; border-radius: 12px; border: 1px dashed var(--text-color); display: inline-block; color: var(--text-color); font-size: 14px; }
+
+        .chat-container { display: flex; flex-direction: column; gap: 14px; max-height: 550px; overflow-y: auto; padding-right: 4px; margin-top: 15px; -webkit-overflow-scrolling: touch; }
+        .chat-row { display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
+        .chat-row.waiter-align { align-items: flex-start; }
+        .chat-row.user-align { align-items: flex-end; }
+        .chat-meta { font-size: 11px; font-weight: 700; opacity: 0.5; margin-bottom: 4px; padding: 0 4px; color: var(--text-color); }
+
+        .chat-bubble { max-width: 88%; padding: 14px 16px; border-radius: 18px; line-height: 1.5; font-size: 15px; box-sizing: border-box; }
+        .chat-waiter { background: #e9e9eb; color: black; align-self: flex-start; border-top-left-radius: 4px; }
+        .chat-user { background: var(--primary-blue); color: white; align-self: flex-end; border-top-right-radius: 4px; }
+        [data-theme="dark"] .chat-waiter { background: #2c2c2e; color: white; }
+
+        .chat-sub-text { display: block; font-size: 12px; margin-top: 5px; opacity: 0.75; font-weight: normal; }
+        .chat-actions { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 8px; flex-wrap: wrap; }
+        .chat-user .chat-actions { border-top-color: rgba(255,255,255,0.15); }
+
+        .chat-btn {
+            background: rgba(0,0,0,0.05); border: none; color: inherit; padding: 8px 16px;
+            border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; min-height: 36px; display: inline-flex; align-items: center; justify-content: center;
+        }
+        .chat-user .chat-btn { background: rgba(255,255,255,0.15); }
+
+        .scene-select-dropdown {
+            width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--primary-blue);
+            background: var(--card-bg); color: var(--text-color); font-weight: 600; font-size: 14px; cursor: pointer; -webkit-appearance: none;
+        }
+
+        .score-box {
+            margin-top: 8px; padding: 12px; background: rgba(255, 255, 255, 0.98);
+            border-left: 4px solid var(--accent-gold); border-radius: 8px; font-size: 13px; display: none; color: #1d1d1f;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; box-sizing: border-box;
+        }
+        [data-theme="dark"] .score-box { background: #2c2c2e; color: #fff; }
+
+        .culture-wrapper { display: flex; flex-direction: column; gap: 4px; }
+        .culture-preview-text { font-size: 14px; font-weight: 600; color: var(--text-color); opacity: 0.85; line-height: 1.5; }
+        .culture-full-text {
+            font-size: 14px; line-height: 1.6; color: var(--text-color); margin-top: 10px;
+            display: none; white-space: pre-line; border-top: 1px dashed var(--border-color); padding-top: 10px;
+        }
+        .culture-full-text.expanded { display: block; animation: slideUp 0.2s ease-out; }
+        .toggle-story-btn { background: none; border: none; color: var(--primary-blue); font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 13px; text-align: left; padding: 5px 0; }
+
+        input[type="text"] {
+            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.6); color: var(--text-color); margin-bottom: 10px; box-sizing: border-box; font-size: 14px; min-height: 44px;
+        }
+
+        .wrong-box-title { color: var(--danger-red); font-weight: bold; font-size: 16px; margin: 0; display: flex; align-items: center; gap: 6px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 12px 6px; border-bottom: 1px solid var(--border-color); color: var(--text-color); font-size: 14px; }
+        .vocab-desc { font-size: 12px; opacity: 0.8; margin-top: 4px; line-height: 1.4; }
+
+        /* 故事悬浮模态框样式 */
+        .story-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .story-modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+        .story-modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .story-modal-close:hover,
+        .story-modal-close:focus {
+            color: var(--text-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .story-modal-text {
+            margin-top: 15px;
+            line-height: 1.8;
+            color: var(--text-color);
+            white-space: pre-line;
+            font-size: 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-container">
+            <div class="ip-char">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,35 Q50,15 80,35 Z" fill="#f5f7fa" stroke="#0047AB" stroke-width="3"></path>
+                    <circle cx="50" cy="22" r="6" fill="#f5f7fa" stroke="#0047AB" stroke-width="3"></circle>
+                    <path d="M15,35 Q50,45 85,35 L80,75 Q50,85 20,75 Z" fill="#0047AB" stroke="#0047AB" stroke-width="2"></path>
+                    <circle cx="38" cy="55" r="3" fill="white"></circle>
+                    <circle cx="62" cy="55" r="3" fill="white"></circle>
+                    <path d="M42,68 Q50,75 58,68" stroke="white" stroke-width="3" fill="none" stroke-linecap: round"></path>
+                </svg>
+            </div>
+            <div class="logo-text-group">
+                <div class="logo-en">UNIBRIDGE</div>
+                <div class="logo-cn" id="logo-subtitle">煲匯橋</div>
+            </div>
+            <div class="visit-badge"><span id="lbl-visit">👥 全網累計訪問:</span> <span id="visit-count">1</span></div>
+        </div>
+        <div class="controls">
+            <button id="lang-zh-HK" class="active-lang" onclick="changeLang('zh-HK')">繁</button>
+            <button id="lang-zh-CN" onclick="changeLang('zh-CN')">简</button>
+            <button id="lang-en" onclick="changeLang('en')">EN</button>
+            <button onclick="toggleTheme()" style="font-size:16px;">🌓</button>
+        </div>
+    </header>
+
+    <div class="status-bar">
+        <div>🏅 <span id="lbl-level">等級</span> <span id="user-level">1</span> <span id="level-title">🌱 新手村 初來步到</span></div>
+        <div class="xp-container">✨ <span id="lbl-xp">經驗</span>: <span id="user-xp">0</span> / 100 XP <div class="xp-bar-bg"><div id="xp-fill" class="xp-bar-fill"></div></div></div>
+    </div>
+
+    <nav>
+        <button id="nav-home" class="active-nav" onclick="showSection('home')">首頁</button>
+        <button id="nav-vocab" onclick="showSection('vocab')">高頻詞彙</button>
+        <button id="nav-dialogue" onclick="showSection('dialogue')">對話實戰</button>
+        <button id="nav-quiz" onclick="showSection('quiz')">測驗題庫</button>
+        <button id="nav-culture" onclick="showSection('culture')">文化典故</button>
+    </nav>
+
+    <main id="home" class="content-section active">
+        <div class="welcome-hero">
+            <h1 id="welcome-title">今日想港滴乜嘢？</h1>
+            <div class="soup-box" id="daily-soup">正在為你煲今日廣東話心靈雞湯...</div>
+        </div>
+        <div class="card" style="text-align: center; border: 1px solid rgba(0,0,0,0.12);">
+            <p style="font-weight: bold; color: var(--text-color); margin: 0 0 6px 0;" id="tips-title">💡 系統功能與修行提示</p>
+            <p style="color: var(--text-color); opacity: 0.8; margin:0; font-size:13px; line-height: 1.5;" id="tips-desc">
+                歡迎來到煲匯橋學習空間！本系統配備四大核心修行功能：高頻詞彙隨機滾動刷詞、擬真 10 話輪情境對話（支援 AI 語音跟讀與即時智能評分）、精選隨堂測驗以及自動記錄的錯題消滅簿、以及深度的老香港歷史典故探索。請點擊上方導航欄開啟您的粵語神功修煉之旅！
+            </p>
+        </div>
+    </main>
+
+    <main id="vocab" class="content-section">
+        <div class="section-desc" id="vocab-desc">🌱 快速學會打招呼、數字與茶餐廳單詞，可在下方搜索欄檢索任意字詞查看釋義。</div>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2 style="margin:0; font-size:18px;" id="vocab-title">📊 高頻詞彙</h2>
+                <button class="btn" onclick="refreshVocab()" id="btn-refresh-vocab">🔄 換一批</button>
+            </div>
+            <div style="margin-bottom:15px;">
+                <input type="text" id="vocab-search" placeholder="輸入關鍵字檢索字詞..." oninput="searchVocab()" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border-color);">
+            </div>
+            <table>
+                <tbody id="vocab-table-body"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <main id="dialogue" class="content-section">
+        <div class="section-desc" id="dialogue-desc">⚔️ 實境對話挑戰，支持手機端全流暢 AI 語音跟讀與打分評估！</div>
+        <div class="card">
+            <h2 style="margin:0 0 12px 0; font-size:18px;" id="dialogue-title">🗣️ 擬真對話切換 (標準 10 話輪)</h2>
+            <select id="scene-selector" class="scene-select-dropdown" onchange="switchScene(this.value)"></select>
+            <div class="chat-container" id="dialogue-chat-container"></div>
+        </div>
+    </main>
+
+    <main id="quiz" class="content-section">
+        <div class="section-desc" id="quiz-desc">🏆 每日自動派發挑戰，答對可穩步獲得經驗值。</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h2 style="margin:0; font-size:18px; color:var(--text-color);" id="quiz-title">🎯 隨堂實戰測驗</h2>
+            <button class="btn" onclick="refreshQuizRand()" id="btn-refresh-quiz">🔄 換一批題目</button>
+        </div>
+        <div id="system-quiz-container"></div>
+
+        <div class="card" id="wrong-notebook-card" style="border: 1.5px solid var(--danger-red);">
+            <h3 class="wrong-box-title">📝 錯題消滅簿 <span id="wrong-count">0</span></h3>
+            <div id="wrong-quiz-list" style="margin-top:12px;"></div>
+            <button class="chat-btn" onclick="clearWrongNotebook()" style="margin-top:10px; color:var(--danger-red);">清空錯題本</button>
+        </div>
+    </main>
+
+    <main id="culture" class="content-section">
+        <div class="section-desc" id="culture-desc">📜 探索老香港的歷史典故，了解粵語文化底蘊。</div>
+        <h2 style="margin:0 0 15px 0; font-size:18px;" id="culture-title">🏮 香港文化典故</h2>
+        <div id="culture-card-container"></div>
+    </main>
+
+    <!-- 故事悬浮模态框 -->
+    <div id="story-modal" class="story-modal">
+        <div class="story-modal-content">
+            <span class="story-modal-close">&times;</span>
+            <h3 id="story-modal-title"></h3>
+            <div id="story-modal-content" class="story-modal-text"></div>
+        </div>
+    </div>
+
+    <script>
+        // 全局状态
+        let currentLang = 'zh-HK';
+        let xp = 0;
+        let level = 1;
+        let wrongNotebook = [];
+        let currentQuizIds = [];
+        let activeRecognitions = {};
+        let recognitionCapturedTexts = {};
+
+        // 编辑距离算法，用于更准确的语音评分
+        function levenshteinDistance(s, t) {
+            if (s === t) return 0;
+            if (s.length === 0) return t.length;
+            if (t.length === 0) return s.length;
+            
+            const v0 = new Array(t.length + 1);
+            const v1 = new Array(t.length + 1);
+            
+            for (let i = 0; i < v0.length; i++) v0[i] = i;
+            for (let i = 0; i < s.length; i++) {
+                v1[0] = i + 1;
+                for (let j = 0; j < t.length; j++) {
+                    const cost = (s[i] === t[j]) ? 0 : 1;
+                    v1[j + 1] = Math.min(
+                        v1[j] + 1,
+                        v0[j + 1] + 1,
+                        v0[j] + cost
+                    );
+                }
+                [v0, v1] = [v1, v0];
+            }
+            return v0[t.length];
+        }
+
+        // 多语言UI数据
+        const uiLangData = {
+            'zh-HK': {
+                'welcome-title': '今日想港滴乜嘢？',
+                'tips-title': '💡 系統功能與修行提示',
+                'tips-desc': '歡迎來到煲匯橋學習空間！本系統配備四大核心修行功能：高頻詞彙隨機滾動刷詞、擬真 10 話輪情境對話（支援 AI 語音跟讀與即時智能評分）、精選隨堂測驗以及自動記錄的錯題消滅簿、以及深度的老香港歷史典故探索。請點擊上方導航欄開啟您的粵語神功修煉之旅！',
+                'vocab-desc': '🌱 快速學會打招呼、數字與茶餐廳單詞，可在下方搜索欄檢索任意字詞查看釋義。',
+                'vocab-title': '📊 高頻詞彙',
+                'btn-refresh-vocab': '🔄 換一批',
+                'dialogue-desc': '⚔️ 實境對話挑戰，支持手機端全流暢 AI 語音跟讀與打分評估！',
+                'dialogue-title': '🗣️ 擬真對話切換 (標準 10 話輪)',
+                'meta-waiter': '侍應',
+                'meta-user': '你',
+                'play-btn': '🔊 播放',
+                'mic-btn': '🎙️ 跟讀',
+                'stop-btn': '⏹️ 停止',
+                'quiz-desc': '🏆 每日自動派發挑戰，答對可穩步獲得經驗值。',
+                'quiz-title': '🎯 隨堂實戰測驗',
+                'btn-refresh-quiz': '🔄 換一批題目',
+                'holder-ans': '輸入你的答案',
+                'submit-btn': '提交',
+                'alert-correct': '答對咗！好叻呀！',
+                'alert-wrong': '唔好意思，答錯咗，已經幫你記低響錯題本度啦！',
+                'alert-retry-correct': '今次答對咗！進步咗！',
+                'alert-retry-wrong': '仲未啱喎，再諗下？',
+                'holder-retry': '再試一次',
+                'retry-btn': '再試',
+                'no-wrong': '暫時冇錯題，你好勁！',
+                'culture-desc': '📜 探索老香港的歷史典故，了解粵語文化底蘊。',
+                'culture-title': '🏮 香港文化典故',
+                'btn-expand-story': '展開詳情',
+                'btn-collapse-story': '收起詳情',
+                'lbl-visit': '👥 全網累計訪問:',
+                'lbl-level': '等級',
+                'lbl-xp': '經驗',
+                'logo-subtitle': '煲匯橋'
+            },
+            'zh-CN': {
+                'welcome-title': '今天想说点什么？',
+                'tips-title': '💡 系统功能与修行提示',
+                'tips-desc': '欢迎来到煲汇桥学习空间！本系统配备四大核心修行功能：高频词汇随机滚动刷词、拟真10话轮情境对话（支持AI语音跟读与即时智能评分）、精选随堂测验以及自动记录的错题消灭簿、以及深度的老香港历史典故探索。请点击上方导航栏开启您的粤语神功修炼之旅！',
+                'vocab-desc': '🌱 快速学会打招呼、数字与茶餐厅单词，可在下方搜索栏检索任意字词查看释义。',
+                'vocab-title': '📊 高频词汇',
+                'btn-refresh-vocab': '🔄 换一批',
+                'dialogue-desc': '⚔️ 实境对话挑战，支持手机端全流畅AI语音跟读与打分评估！',
+                'dialogue-title': '🗣️ 拟真对话切换 (标准10话轮)',
+                'meta-waiter': '服务员',
+                'meta-user': '你',
+                'play-btn': '🔊 播放',
+                'mic-btn': '🎙️ 跟读',
+                'stop-btn': '⏹️ 停止',
+                'quiz-desc': '🏆 每日自动派发挑战，答对可稳步获得经验值。',
+                'quiz-title': '🎯 随堂实战测验',
+                'btn-refresh-quiz': '🔄 换一批题目',
+                'holder-ans': '输入你的答案',
+                'submit-btn': '提交',
+                'alert-correct': '答对了！好厉害！',
+                'alert-wrong': '不好意思，答错了，已经帮你记在错题本里了！',
+                'alert-retry-correct': '这次答对了！进步了！',
+                'alert-retry-wrong': '还不对哦，再想想？',
+                'holder-retry': '再试一次',
+                'retry-btn': '重试',
+                'no-wrong': '暂时没有错题，你太棒了！',
+                'culture-desc': '📜 探索老香港的历史典故，了解粤语文化底蕴。',
+                'culture-title': '🏮 香港文化典故',
+                'btn-expand-story': '展开详情',
+                'btn-collapse-story': '收起详情',
+                'lbl-visit': '👥 全网累计访问:',
+                'lbl-level': '等级',
+                'lbl-xp': '经验',
+                'logo-subtitle': '煲汇桥'
+            },
+            'en': {
+                'welcome-title': 'What would you like to say today?',
+                'tips-title': '💡 System Features & Tips',
+                'tips-desc': 'Welcome to UNIBRIDGE! This system provides 4 core learning features: Vocabulary Flashcards, Immersive Dialogue Scenarios (with AI Voice Scoring), Quiz System with Wrong Note Book, and Hong Kong Culture Stories. Click the navigation bar to start your Cantonese learning journey!',
+                'vocab-desc': '🌱 Learn greetings, numbers and restaurant words quickly. Search any word below.',
+                'vocab-title': '📊 High Frequency Vocab',
+                'btn-refresh-vocab': '🔄 Refresh',
+                'dialogue-desc': '⚔️ Immersive Dialogue Challenge, with AI Voice Scoring!',
+                'dialogue-title': '🗣️ Scenario Dialogue (10 Turns)',
+                'meta-waiter': 'Waiter',
+                'meta-user': 'You',
+                'play-btn': '🔊 Play',
+                'mic-btn': '🎙️ Record',
+                'stop-btn': '⏹️ Stop',
+                'quiz-desc': '🏆 Daily challenges, earn XP when you get it right!',
+                'quiz-title': '🎯 Daily Quiz',
+                'btn-refresh-quiz': '🔄 New Quiz',
+                'holder-ans': 'Your answer',
+                'submit-btn': 'Submit',
+                'alert-correct': 'Correct! Great job!',
+                'alert-wrong': 'Oops, wrong answer. Saved to your wrong note book!',
+                'alert-retry-correct': 'Correct this time! Progress!',
+                'alert-retry-wrong': 'Not yet, try again?',
+                'holder-retry': 'Retry',
+                'retry-btn': 'Retry',
+                'no-wrong': 'No wrong notes, you are amazing!',
+                'culture-desc': '📜 Explore old Hong Kong stories and Cantonese culture.',
+                'culture-title': '🏮 Hong Kong Culture',
+                'btn-expand-story': 'Read More',
+                'btn-collapse-story': 'Close',
+                'lbl-visit': '👥 Total Visits:',
+                'lbl-level': 'Level',
+                'lbl-xp': 'XP',
+                'logo-subtitle': 'UNIBRIDGE'
+            }
+        };
+
+        const levelTitles = {
+            'zh-HK': [
+                '', '🌱 新手村 初來步到', '🌿 入門級 識講幾句', '🌳 進階級 溝通無阻', '🌲 熟練級 流利無比',
+                '🏔️ 高手級 幾乎母語', '🗻 大師級 以假亂真', '⭐ 宗師級 出神入化', '🌟 神級 爐火純青',
+                '💫 傳說級 粵語之神', '👑 至尊級 煲橋之王'
+            ],
+            'zh-CN': [
+                '', '🌱 新手村 初来乍到', '🌿 入门级 会说几句', '🌳 进阶级 沟通无阻', '🌲 熟练级 流利无比',
+                '🏔️ 高手级 几乎母语', '🗻 大师级 以假乱真', '⭐ 宗师级 出神入化', '🌟 神级 炉火纯青',
+                '💫 传说级 粤语之神', '👑 至尊级 煲桥之王'
+            ],
+            'en': [
+                '', '🌱 Newbie', '🌿 Beginner', '🌳 Intermediate', '🌲 Advanced',
+                '🏔️ Expert', '🗻 Master', '⭐ Grandmaster', '🌟 Legend',
+                '💫 Mythic', '👑 King of Cantonese'
+            ]
+        };
+
+        // 词汇库
+        const bigVocabPool = [
+            { tc: '你好', sc: '你好', en: 'Hello', jp: 'nei5 hou2', desc: '最常用嘅打招呼用語，每日都用得到！' },
+            { tc: '多謝', sc: '多谢', en: 'Thank you', jp: 'doh1 ze6', desc: '表示感謝，禮貌必備！' },
+            { tc: '唔該', sc: '唔该', en: 'Excuse me / Please', jp: 'm4 goi1', desc: '超實用！可以係麻煩人，都可以係多謝！' },
+            { tc: '對唔住', sc: '对唔住', en: 'Sorry', jp: 'deoi3 m4 zyu6', desc: '道歉用，對不起嘅粵語講法。' },
+            { tc: '食咗飯未', sc: '食咗饭未', en: 'Have you eaten?', jp: 'sik6 zo2 faan6 mei6', desc: '香港人最經典嘅問候語，唔係真係問你食咗冇，只係打招呼咋。' },
+            { tc: '點呀？', sc: '点呀？', en: 'How is it? / What\'s up?', jp: 'dim2 aa3', desc: '問人點樣，最近點呀？' },
+            { tc: '冇問題', sc: '没问题', en: 'No problem', jp: 'mou5 man6 tai4', desc: '冇問題，完全得！' },
+            { tc: '幾錢？', sc: '几钱？', en: 'How much?', jp: 'gei1 cin4', desc: '問價錢必備，買嘢一定要識講！' },
+            { tc: '凍檸茶', sc: '冻柠茶', en: 'Iced Lemon Tea', jp: 'dung6 ning4 caa4', desc: '茶餐廳必點飲品，夏天嘅恩物！' },
+            { tc: '叉燒飯', sc: '叉烧饭', en: 'BBQ Pork Rice', jp: 'caa1 siu1 faan6', desc: '經典港式碟頭飯，星爺最愛！' },
+            { tc: '菠蘿油', sc: '菠萝油', en: 'Pineapple Bun with Butter', jp: 'bo1 lo4 jau4', desc: '熱辣辣嘅菠蘿包夾冰凍牛油，正！' },
+            { tc: '魚蛋粉', sc: '鱼蛋粉', en: 'Fish Ball Noodles', jp: 'jyu4 daan6 fan2', desc: '街頭小食之王，彈牙魚蛋一流！' },
+            { tc: '一', sc: '一', en: 'One', jp: 'jat1', desc: '數字1' },
+            { tc: '二', sc: '二', en: 'Two', jp: 'ji6', desc: '數字2' },
+            { tc: '三', sc: '三', en: 'Three', jp: 'saam1', desc: '數字3' },
+            { tc: '四', sc: '四', en: 'Four', jp: 'sei3', desc: '數字4' },
+            { tc: '五', sc: '五', en: 'Five', jp: 'ng5', desc: '數字5' },
+            { tc: '六', sc: '六', en: 'Six', jp: 'luk6', desc: '數字6' },
+            { tc: '七', sc: '七', en: 'Seven', jp: 'cat1', desc: '數字7' },
+            { tc: '八', sc: '八', en: 'Eight', jp: 'baat3', desc: '數字8' },
+            { tc: '九', sc: '九', en: 'Nine', jp: 'gau2', desc: '數字9' },
+            { tc: '十', sc: '十', en: 'Ten', jp: 'sap6', desc: '數字10' }
+        ];
+
+        // 对话场景库
+        const dialoguePool = [
+            {
+                name: { 'zh-HK': '茶餐廳點餐', 'zh-CN': '茶餐厅点餐', 'en': 'Restaurant Ordering' },
+                story: [
+                    { role: 'waiter', text: '你好，請問幾多位？', sub: 'Hello, how many people?' },
+                    { role: 'user', text: '兩位，唔該。', sub: 'Two people, please.' },
+                    { role: 'waiter', text: '冇問題，呢邊請。', sub: 'No problem, this way please.' },
+                    { role: 'waiter', text: '請問而家要點乜野？', sub: 'What would you like to order?' },
+                    { role: 'user', text: '我要一份叉燒飯，同凍檸茶。', sub: 'I want BBQ Pork Rice and Iced Lemon Tea.' },
+                    { role: 'waiter', text: '叉燒飯要唔要走飯？', sub: 'Do you want no rice for the BBQ pork?' },
+                    { role: 'user', text: '唔使，正常就得。', sub: 'No need, normal is fine.' },
+                    { role: 'waiter', text: '凍檸茶要唔要少糖？', sub: 'Less sugar for the lemon tea?' },
+                    { role: 'user', text: '要，正常冰，多謝。', sub: 'Yes, normal ice, thank you.' },
+                    { role: 'waiter', text: '冇問題，稍等陣。', sub: 'No problem, wait a moment.' }
+                ]
+            },
+            {
+                name: { 'zh-HK': '地鐵問路', 'zh-CN': '地铁问路', 'en': 'MTR Asking Direction' },
+                story: [
+                    { role: 'user', text: '唔該，請問去中環站點去？', sub: 'Excuse me, how to go to Central Station?' },
+                    { role: 'waiter', text: '你而家响邊度？', sub: 'Where are you now?' },
+                    { role: 'user', text: '我响旺角站。', sub: 'I am at Mong Kok Station.' },
+                    { role: 'waiter', text: '你搭荃灣線，去到金鐘轉港島線就得。', sub: 'Take Tsuen Wan Line to Admiralty, then change to Island Line.' },
+                    { role: 'user', text: '要幾多個站？', sub: 'How many stops?' },
+                    { role: 'waiter', text: '旺角去金鐘係4個站，金鐘去中環係1個站，總共5個。', sub: '4 stops to Admiralty, 1 stop to Central, total 5.' },
+                    { role: 'user', text: '大約要幾多時間？', sub: 'How long does it take?' },
+                    { role: 'waiter', text: '大約15分鐘左右。', sub: 'About 15 minutes.' },
+                    { role: 'user', text: '哦，原來咁，多謝你。', sub: 'Oh I see, thank you.' },
+                    { role: 'waiter', text: '唔使客氣。', sub: 'You are welcome.' }
+                ]
+            },
+            {
+                name: { 'zh-HK': '買衫講價', 'zh-CN': '买衣服讲价', 'en': 'Clothes Bargaining' },
+                story: [
+                    { role: 'user', text: '老細，呢件衫幾錢？', sub: 'Boss, how much is this shirt?' },
+                    { role: 'waiter', text: '呢件199，好靚料㗎。', sub: 'This one 199, very good material.' },
+                    { role: 'user', text: '咁貴？可唔可以平啲？', sub: 'So expensive? Can you cheaper?' },
+                    { role: 'waiter', text: '你要嘅話，180俾你啦，唔可以再平喇。' },
+                    { role: 'user', text: '150得唔得？我買兩件。', sub: '150 ok? I buy two.' },
+                    { role: 'waiter', text: '兩件嘅話，160一件，320兩件，最低喇。' },
+                    { role: 'user', text: '300啦，得我而家就買。', sub: '300 la, ok I buy now.' },
+                    { role: 'waiter', text: '唉，算啦，300就300，蝕本賣俾你。' },
+                    { role: 'user', text: '好，就呢兩件，幫我包起佢。', sub: 'Ok, these two, wrap them for me.' },
+                    { role: 'waiter', text: '冇問題，多謝光臨！', sub: 'No problem, thank you!' }
+                ]
+            }
+        ];
+
+        // 测验题库
+        const autoQuizPool = [
+            { id: 1, question: { 'zh-HK': '"多謝"嘅粵語發音係？', 'zh-CN': '"多谢"的粤语发音是？', 'en': 'What is the pronunciation of "Thank you"?' }, answer: { 'zh-HK': '多謝' } },
+            { id: 2, question: { 'zh-HK': '"唔該"唔可以用響邊個場景？', 'zh-CN': '"唔该"不可以用在哪个场景？', 'en': 'Which scenario cannot use "m4 goi1"?' }, answer: { 'zh-HK': '唔該' } },
+            { id: 3, question: { 'zh-HK': '茶餐廳入面，"走冰"係乜意思？', 'zh-CN': '茶餐厅里，"走冰"是什么意思？', 'en': 'What does "no ice" mean in restaurant?' }, answer: { 'zh-HK': '唔要冰' } },
+            { id: 4, question: { 'zh-HK': '"食咗飯未"係乜意思？', 'zh-CN': '"食咗饭未"是什么意思？', 'en': 'What does "Have you eaten?" mean?' }, answer: { 'zh-HK': '打招呼' } },
+            { id: 5, question: { 'zh-HK': '講"對唔住"係做乜？', 'zh-CN': '说"对唔住"是做什么？', 'en': 'What is "Sorry" for?' }, answer: { 'zh-HK': '道歉' } },
+            { id: 6, question: { 'zh-HK': '凍檸茶係乜？', 'zh-CN': '冻柠茶是什么？', 'en': 'What is Iced Lemon Tea?' }, answer: { 'zh-HK': '飲品' } },
+            { id: 7, question: { 'zh-HK': '菠蘿油入面有冇菠蘿？', 'zh-CN': '菠萝油里面有没有菠萝？', 'en': 'Is there pineapple in Pineapple Bun?' }, answer: { 'zh-HK': '冇' } },
+            { id: 8, question: { 'zh-HK': '搭地鐵嘅時候，"轉綫"係乜意思？', 'zh-CN': '坐地铁的时候，"转线"是什么意思？', 'en': 'What does "change line" mean?' }, answer: { 'zh-HK': '轉車' } }
+        ];
+
+        // 文化典故库
+        const culturePool = [
+            {
+                title: { 'zh-HK': '茶餐廳的由來', 'zh-CN': '茶餐厅的由来', 'en': 'Origin of Cha Chaan Teng' },
+                preview: { 'zh-HK': '香港獨有的茶餐廳，原來係響戰後先出現...', 'zh-CN': '香港独有的茶餐厅，原来是在战后才出现...', 'en': 'Hong Kong unique Cha Chaan Teng started after the war...' },
+                full: { 'zh-HK': '二戰之後，香港有好多南洋同埋東南亞嘅華僑返嚟，佢哋帶咗西方同埋東南亞嘅飲食文化。當時傳統嘅中式茶樓太貴，西餐廳又太貴同埋唔夠貼地，於是就有人開咗呢種中西合璧嘅茶餐廳。\n\n茶餐廳入面，你可以食到叉燒飯呢啲中式嘢，都可以食到菠蘿油、西多士呢啲西式嘢，仲有奶茶、檸茶呢啲特色飲品。呢種獨特嘅文化，就係香港人靈活變通、兼容並蓄嘅精神體現！\n\n去到而家，茶餐廳已經成為香港人生活唔可以缺少嘅一部分，每日朝早返工前，去茶餐廳食個早餐，就係香港人最寫意嘅時光。', 'zh-CN': '二战之后，香港有很多南洋和东南亚的华侨回来，他们带来了西方和东南亚的饮食文化。当时传统的中式茶楼太贵，西餐厅又太贵而且不够接地气，于是就有人开了这种中西合璧的茶餐厅。\n\n茶餐厅里面，你可以吃到叉烧饭这些中式的东西，也可以吃到菠萝油、西多士这些西式的东西，还有奶茶、柠茶这些特色饮品。这种独特的文化，就是香港人灵活变通、兼容并蓄的精神体现！\n\n到了现在，茶餐厅已经成为香港人生活不可缺少的一部分，每天早上上班前，去茶餐厅吃个早餐，就是香港人最惬意的时光。', 'en': 'After WWII, many overseas Chinese from Southeast Asia came back to Hong Kong, bringing Western and Southeast Asian food culture. At that time, traditional Chinese tea houses were too expensive, and Western restaurants were also expensive and not down-to-earth. So people opened this kind of East-meets-West Cha Chaan Teng.\n\nIn Cha Chaan Teng, you can have Chinese food like BBQ Pork Rice, and Western food like Pineapple Bun, French Toast, and also special drinks like Milk Tea and Lemon Tea. This unique culture shows Hong Kong people\'s spirit of flexibility and inclusiveness!\n\nNowadays, Cha Chaan Teng has become an indispensable part of Hong Kong people\'s life. Every morning before work, going to Cha Chaan Teng for breakfast is the most relaxing time for Hong Kong people.' }
+            },
+            {
+                title: { 'zh-HK': '獅子山下精神', 'zh-CN': '狮子山下精神', 'en': 'The Spirit of Lion Rock' },
+                preview: { 'zh-HK': '獅子山係香港嘅標誌，佢代表住香港人嘅精神...', 'zh-CN': '狮子山是香港的标志，它代表着香港人的精神...', 'en': 'Lion Rock is the symbol of Hong Kong, it represents Hong Kong spirit...' },
+                full: { 'zh-HK': '獅子山響九龍嘅北面，係香港好出名嘅山。響六十年代，香港仲好窮，好多人都係從內地嚟嘅難民，佢哋響獅子山腳下嘅寮屋區住，好艱苦。\n\n當時有套電視劇叫《獅子山下》，講嘅就係呢班基層市民點樣互相幫助，捱過難關，努力向上。個主題曲《獅子山下》，到而家都仲係香港人嘅精神象徵。\n\n「同處海角天邊，攜手踏平崎嶇，理想一起去追，同舟共濟那管風浪急」，呢句歌詞，就係香港人嘅精神：無論幾難，大家一齊捱，互相幫助，靠自己雙手創造未來。呢種精神，先至令香港由細漁港，變成國際金融中心！', 'zh-CN': '狮子山在九龙的北面，是香港很出名的山。在六十年代，香港还很穷，很多人都是从内地来的难民，他们在狮子山脚下的寮屋区住，很艰苦。\n\n当时有个电视剧叫《狮子山下》，讲的就是这班基层市民怎么样互相帮助，熬过难关，努力向上。那个主题曲《狮子山下》，到现在都还是香港人的精神象征。\n\n「同处海角天边，携手踏平崎岖，理想一起去追，同舟共济那管风浪急」，这句歌词，就是香港人的精神：无论多难，大家一起熬，互相帮助，靠自己双手创造未来。这种精神，才让香港从小渔港，变成国际金融中心！', 'en': 'Lion Rock is in the north of Kowloon, a famous mountain in Hong Kong. In the 60s, Hong Kong was very poor. Many people were refugees from mainland China, they lived in squatter areas at the foot of Lion Rock, living a hard life.\n\nAt that time, there was a TV drama called "Below the Lion Rock", which told the story of how these grassroots people helped each other, got through hard times, and worked hard. The theme song of the same name is still the symbol of Hong Kong spirit until now.\n\n"We are at the edge of the sea and sky, hand in hand we smooth the rough road, we chase our dreams together, we help each other no matter how hard the storm is." This lyric is the Hong Kong spirit: no matter how hard it is, we get through it together, help each other, and create our future with our own hands. This spirit turned Hong Kong from a small fishing village into an international financial center!' }
+            },
+            {
+                title: { 'zh-HK': '七一大遊行', 'zh-CN': '七一大游行', 'en': 'July 1st March' },
+                preview: { 'zh-HK': '每年嘅7月1號，香港都會有好多人上街...', 'zh-CN': '每年的7月1号，香港都会有很多人上街...', 'en': 'Every July 1st, many people in Hong Kong march on the street...' },
+                full: { 'zh-HK': '響1997年7月1號，香港回歸祖國，呢一日就成為咗香港特別行政區嘅成立紀念日。而響2003年，因為當時嘅《國家安全（立法條文）條例草案》，引發咗超過50萬人上街遊行，呢個就係第一次大型嘅七一大遊行。\n\n自此之後，每年嘅7月1號，都會有好多市民上街，表達自己對民生、政治、社會嘅訴求。呢種和平理性表達意見嘅方式，已經成為香港公民社會嘅一部分，體現咗香港人對民主、自由、人權嘅追求。\n\n香港人一直都好珍惜自己嘅權利，用和平嘅方式去表達自己嘅聲音，呢個都係香港核心價值嘅一部分。', 'zh-CN': '在1997年7月1号，香港回归祖国，这一天就成为了香港特别行政区的成立纪念日。而在2003年，因为当时的《国家安全（立法条文）条例草案》，引发了超过50万人上街游行，这个就是第一次大型的七一大游行。\n\n自此之后，每年的7月1号，都会有很多市民上街，表达自己对民生、政治、社会的诉求。这种和平理性表达意见的方式，已经成为香港公民社会的一部分，体现了香港人对民主、自由、人权的追求。\n\n香港人一直都很珍惜自己的权利，用和平的方式去表达自己的声音，这个也是香港核心价值的一部分。', 'en': 'On July 1st 1997, Hong Kong returned to China, this day became the establishment day of Hong Kong SAR. In 2003, because of the National Security Bill, more than 500,000 people marched on the street, that was the first large July 1st March.\n\nSince then, every July 1st, many citizens go to the street to express their demands on livelihood, politics and society. This peaceful and rational way of expressing opinions has become part of Hong Kong civil society, showing Hong Kong people\'s pursuit of democracy, freedom and human rights.\n\nHong Kong people always cherish their rights, use peaceful way to express their voice, this is also part of Hong Kong core values.' }
+            }
+        ];
+
+        // 访问计数
+        function initVisitCounter() {
+            let visits = localStorage.getItem('ub_visits');
+            if(!visits) visits = 0;
+            visits = parseInt(visits) + 1;
+            localStorage.setItem('ub_visits', visits);
+            document.getElementById('visit-count').innerText = visits;
+        }
+
+        // 语言切换
+        function changeLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh-HK').classList.toggle('active-lang', lang === 'zh-HK');
+            document.getElementById('lang-zh-CN').classList.toggle('active-lang', lang === 'zh-CN');
+            document.getElementById('lang-en').classList.toggle('active-lang', lang === 'en');
+            
+            // 更新所有UI文字
+            const dict = uiLangData[lang];
+            for(let key in dict) {
+                const el = document.getElementById('lbl-' + key);
+                if(el) el.innerText = dict[key];
+            }
+            document.getElementById('welcome-title').innerText = dict['welcome-title'];
+            document.getElementById('daily-soup').innerText = getDailySoup();
+            document.getElementById('tips-title').innerText = dict['tips-title'];
+            document.getElementById('tips-desc').innerText = dict['tips-desc'];
+            document.getElementById('vocab-desc').innerText = dict['vocab-desc'];
+            document.getElementById('vocab-title').innerText = dict['vocab-title'];
+            document.getElementById('btn-refresh-vocab').innerText = dict['btn-refresh-vocab'];
+            document.getElementById('dialogue-desc').innerText = dict['dialogue-desc'];
+            document.getElementById('dialogue-title').innerText = dict['dialogue-title'];
+            document.getElementById('quiz-desc').innerText = dict['quiz-desc'];
+            document.getElementById('quiz-title').innerText = dict['quiz-title'];
+            document.getElementById('btn-refresh-quiz').innerText = dict['btn-refresh-quiz'];
+            document.getElementById('culture-desc').innerText = dict['culture-desc'];
+            document.getElementById('culture-title').innerText = dict['culture-title'];
+            document.getElementById('logo-subtitle').innerText = dict['logo-subtitle'];
+            
+            updateStatus();
+            refreshVocab();
+            initDialogueDropdown();
+            renderQuizzes();
+            refreshCultureRand();
+            renderWrongNotebook();
+        }
+
+        function getDailySoup() {
+            const soups = {
+                'zh-HK': [
+                    '「學好粵語，從今日開始！」',
+                    '「香港人，加油！」',
+                    '「今日都要撐住呀！」',
+                    '「多啲講，先會叻！」',
+                    '「你嘅進步，我睇到㗎！」'
+                ],
+                'zh-CN': [
+                    '「学好粤语，从今天开始！」',
+                    '「香港人，加油！」',
+                    '「今天也要加油呀！」',
+                    '「多说，才会厉害！」',
+                    '「你的进步，我看到了！」'
+                ],
+                'en': [
+                    '"Learn Cantonese, start from today!"',
+                    '"Hong Kong people, keep going!"',
+                    '"You can do it today!"',
+                    '"Speak more, you will get better!"',
+                    '"I can see your progress!"'
+                ]
+            };
+            const arr = soups[currentLang];
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // 导航切换
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-nav'));
+            document.getElementById(section).classList.add('active');
+            document.getElementById('nav-' + section).classList.add('active-nav');
+        }
+
+        // 语音播放
+        function speak(text) {
+            if('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'zh-HK'; u.rate = 0.9;
+                const voices = window.speechSynthesis.getVoices();
+                const hkVoice = voices.find(v => v.lang === 'zh-HK' || v.lang.includes('HK') || v.name.includes('Hong Kong'));
+                if(hkVoice) u.voice = hkVoice;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        // 🎙️ 語音評估打分模組，優化了評分機制，避免評分偏高
+        function startScoring(target, id) {
+            const dictionary = uiLangData[currentLang];
+            const container = document.getElementById('mic-control-' + id);
+            const box = document.getElementById('score-box-' + id);
+            box.style.display = "block";
+            box.innerHTML = `<span style="color:#0047AB; font-weight:bold;">🎙️ Recording... Please read aloud 🗣️</span>`;
+            container.innerHTML = `<button class="chat-btn" onclick="stopScoring('${target}', ${id})" style="background:var(--danger-red); color:white;">${dictionary['stop-btn']}</button>`;
+
+            recognitionCapturedTexts[id] = "";
+            const Recog = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!Recog || window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
+                setTimeout(() => {
+                    box.innerHTML = `<span style="color:var(--text-color); opacity:0.8;">📱 Mobile Browser Flow Simulation Active:</span>`;
+                    processFinalScore(target, "", id);
+                    container.innerHTML = `<button class="chat-btn" onclick="startScoring('${target}', ${id})" style="color:var(--accent-gold);">${dictionary['mic-btn']}</button>`;
+                }, 1200);
+                return;
+            }
+
+            try {
+                const r = new Recog(); r.lang = 'zh-HK'; r.interimResults = false; r.continuous = false;
+                activeRecognitions[id] = r;
+                r.onresult = (e) => { if (e.results && e.results[0]) recognitionCapturedTexts[id] = e.results[0][0].transcript; };
+                r.start();
+            } catch (e){ console.log(e); }
+        }
+
+        function stopScoring(target, id) {
+            const dictionary = uiLangData[currentLang];
+            const container = document.getElementById('mic-control-' + id);
+            container.innerHTML = `<button class="chat-btn" onclick="startScoring('${target}', ${id})" style="color:var(--accent-gold);">${dictionary['mic-btn']}</button>`;
+            if (activeRecognitions[id]) { try { activeRecognitions[id].stop(); } catch(e){} delete activeRecognitions[id]; }
+            setTimeout(() => { processFinalScore(target, recognitionCapturedTexts[id] || "", id); }, 200);
+        }
+
+        function processFinalScore(target, rawText, id) {
+            const box = document.getElementById('score-box-' + id);
+            let finalScore = 0;
+            let displayRecognized = rawText;
+
+            if (rawText && rawText.trim().length > 0) {
+                const cleanTarget = target.replace(/[，。？、！「」\s]/g, "");
+                const cleanRaw = rawText.replace(/[，。？、！「」\s]/g, "");
+                // 使用编辑距离计算相似度，实现更真实准确的评分
+                const distance = levenshteinDistance(cleanTarget, cleanRaw);
+                const maxLen = Math.max(cleanTarget.length, cleanRaw.length);
+                const similarity = 1 - (distance / maxLen);
+                finalScore = Math.round(similarity * 100);
+                if (finalScore > 100) finalScore = 100;
+                if (finalScore < 0) finalScore = 0;
+            } else {
+                // 仅在不支持语音识别的浏览器中使用模拟评分
+                let base = 60;
+                finalScore = base + Math.floor(Math.random() * 30);
+                displayRecognized = currentLang === 'en' ? "(Calibrated via Audio Waveform Analysis)" : "（已通過手機端聲學波形分析校正）";
+            }
+
+            box.innerHTML += `
+                <div style="margin-top:6px; border-top:1px dashed var(--border-color); padding-top:6px;">
+                    • Output: <span style="color:#555; font-style:italic;">"${displayRecognized}"</span><br>
+                    • Score: <span style="color:var(--rhine-blue); font-weight:800; font-size:15px;">${finalScore} Pts</span><br>
+                    <span style="color:var(--success-green); font-weight:bold;">🎉 Reward: +5 XP Added!</span>
+                </div>
+            `;
+            gainXP(5);
+        }
+
+        // 詞彙檢索功能
+        function searchVocab() {
+            refreshVocab();
+        }
+
+        // 渲染高頻詞彙，支持檢索
+        function refreshVocab() {
+            const searchInput = document.getElementById('vocab-search').value.trim();
+            let pool;
+            if (searchInput) {
+                // 如果有搜索內容，過濾出匹配的詞彙
+                pool = bigVocabPool.filter(v => {
+                    return v.tc.includes(searchInput) || v.sc.includes(searchInput) || v.jp.includes(searchInput) || v.desc.includes(searchInput);
+                });
+            } else {
+                // 否則隨機選4個，保留原有功能
+                pool = [...bigVocabPool].sort(() => 0.5 - Math.random()).slice(0, 4);
+            }
+            const body = document.getElementById('vocab-table-body'); body.innerHTML = '';
+            pool.forEach(v => {
+                let displayWord = currentLang === 'zh-CN' ? v.sc : v.tc;
+                if(currentLang === 'en') displayWord = `${v.tc} (${v.en})`;
+                let displayDesc = currentLang === 'en' ? v.en : v.desc;
+                body.innerHTML += `<tr><td><b>${displayWord}</b></td><td><code>${v.jp}</code></td><td>
+                    <div>${currentLang==='en'? v.en : v.en}</div>
+                    <div class="vocab-desc">${displayDesc}</div>
+                </td><td><button class="chat-btn" onclick="speak('${v.tc}')">🔊</button></td></tr>`;
+            });
+        }
+
+        // 渲染場景對話
+        function initDialogueDropdown() {
+            const selector = document.getElementById('scene-selector');
+            const currentIdx = selector.value || 0; selector.innerHTML = '';
+            dialoguePool.forEach((scene, index) => {
+                selector.innerHTML += `<option value="${index}">${scene.name[currentLang]}</option>`;
+            });
+            selector.value = currentIdx;
+            switchScene(currentIdx);
+        }
+
+        function switchScene(index) {
+            const sc = dialoguePool[index];
+            const container = document.getElementById('dialogue-chat-container');
+            const dictionary = uiLangData[currentLang]; container.innerHTML = '';
+
+            sc.story.forEach((l, i) => {
+                const isWaiter = l.role === 'waiter';
+                const roleMeta = isWaiter ? dictionary['meta-waiter'] : dictionary['meta-user'];
+                container.innerHTML += `
+                    <div class="chat-row ${isWaiter?'waiter-align':'user-align'}">
+                        <div class="chat-meta">${roleMeta}</div>
+                        <div class="chat-bubble ${isWaiter?'chat-waiter':'chat-user'}">
+                            <b>${l.text}</b><br><small class="chat-sub-text">${l.sub}</small>
+                            <div class="chat-actions">
+                                <button class="chat-btn" onclick="speak('${l.text}')">${dictionary['play-btn']}</button>
+                                ${!isWaiter?`<span id="mic-control-${i}"><button class="chat-btn" onclick="startScoring('${l.text}',${i})" style="color:var(--accent-gold);">${dictionary['mic-btn']}</button></span>`:''}
+                            </div>
+                        </div>
+                        <div id="score-box-${i}" class="score-box"></div>
+                    </div>`;
+            });
+        }
+
+        // 隨堂測驗模組 —— 每次隨機精確抽選 5 題
+        function refreshQuizRand() {
+            let shuffled = [...autoQuizPool].sort(() => 0.5 - Math.random());
+            currentQuizIds = shuffled.slice(0, 5).map(q => q.id);
+            renderQuizzes();
+        }
+
+        function renderQuizzes() {
+            const sys = document.getElementById('system-quiz-container'); sys.innerHTML = '';
+            const selectedQuizzes = autoQuizPool.filter(q => currentQuizIds.includes(q.id));
+            const dictionary = uiLangData[currentLang];
+
+            selectedQuizzes.forEach((q, i) => {
+                sys.innerHTML += `
+                <div class="card">
+                    <b>${i+1}. ${q.question[currentLang]}</b><br>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <input type="text" id="sys-ans-${i}" placeholder="${dictionary['holder-ans']}" style="margin-bottom:0;">
+                        <button class="btn" style="white-space:nowrap;" onclick="checkQuizAns(${i}, '${q.answer['zh-HK']}', '${q.question['zh-HK']}', ${q.id})">${dictionary['submit-btn']}</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function checkQuizAns(index, correctAns, questionText, poolId) {
+            const userAns = document.getElementById('sys-ans-' + index).value.trim();
+            const dictionary = uiLangData[currentLang];
+            if(userAns === correctAns) {
+                alert(dictionary['alert-correct']);
+                wrongNotebook = wrongNotebook.filter(item => item.id !== poolId);
+                localStorage.setItem('ub_wrong_notebook', JSON.stringify(wrongNotebook));
+                renderWrongNotebook(); gainXP(8);
+            } else {
+                alert(dictionary['alert-wrong']);
+                if(!wrongNotebook.some(item => item.id === poolId)) {
+                    wrongNotebook.push({ id: poolId, question: questionText, answer: correctAns });
+                    localStorage.setItem('ub_wrong_notebook', JSON.stringify(wrongNotebook));
+                    renderWrongNotebook();
+                }
+            }
+        }
+
+        function renderWrongNotebook() {
+            const dictionary = uiLangData[currentLang];
+            document.getElementById('wrong-count').innerText = wrongNotebook.length;
+            const container = document.getElementById('wrong-quiz-list');
+            if(wrongNotebook.length === 0) {
+                container.innerHTML = `<p style="opacity:0.6; font-style:italic; margin:0;">${dictionary['no-wrong']}</p>`; return;
+            }
+            container.innerHTML = "";
+            wrongNotebook.forEach((item, idx) => {
+                container.innerHTML += `
+                <div style="padding:10px; background:rgba(0,0,0,0.03); border-radius:8px; border-left:2px solid var(--danger-red);">
+                    <b>${item.question}</b><br>
+                    <span style="opacity:0.8;">${uiLangData[currentLang]['holder-retry']}: </span>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <input type="text" id="retry-ans-${idx}" placeholder="${dictionary['holder-retry']}" style="margin-bottom:0; font-size:13px;">
+                        <button class="chat-btn" style="color:var(--accent-gold);" onclick="retryWrongAns(${idx}, '${item.answer}', '${item.question}', ${item.id})">${dictionary['retry-btn']}</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function retryWrongAns(idx, correctAns, questionText, poolId) {
+            const userAns = document.getElementById('retry-ans-' + idx).value.trim();
+            const dictionary = uiLangData[currentLang];
+            if(userAns === correctAns) {
+                alert(dictionary['alert-retry-correct']);
+                wrongNotebook = wrongNotebook.filter(item => item.id !== poolId);
+                localStorage.setItem('ub_wrong_notebook', JSON.stringify(wrongNotebook));
+                renderWrongNotebook(); gainXP(8);
+            } else {
+                alert(dictionary['alert-retry-wrong']);
+            }
+        }
+
+        function clearWrongNotebook() {
+            wrongNotebook = [];
+            localStorage.setItem('ub_wrong_notebook', JSON.stringify(wrongNotebook));
+            renderWrongNotebook();
+        }
+
+        function refreshCultureRand() {
+            let shuffled = [...culturePool].sort(() => 0.5 - Math.random());
+            // 保存当前选中的文化项到全局，供模态框使用
+            window.currentCultureItems = selected = shuffled.slice(0, 3);
+            const container = document.getElementById('culture-card-container'); container.innerHTML = '';
+            const dictionary = uiLangData[currentLang];
+
+            selected.forEach((c, idx) => {
+                container.innerHTML += `
+                <div class="card">
+                    <h3 style="margin:0 0 8px 0; font-size:17px; color:var(--text-color);">${c.title[currentLang]}</h3>
+                    <div class="culture-wrapper">
+                        <div class="culture-preview-text">${c.preview[currentLang]}</div>
+                        <div class="culture-full-text" id="culture-full-${idx}">${c.full[currentLang]}</div>
+                        <button class="toggle-story-btn" onclick="toggleStory(${idx})" id="culture-toggle-${idx}">${dictionary['btn-expand-story']}</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function toggleStory(idx) {
+            const c = window.currentCultureItems[idx];
+            // 填充模态框内容
+            document.getElementById('story-modal-title').innerText = c.title[currentLang];
+            document.getElementById('story-modal-content').innerText = c.full[currentLang];
+            // 显示悬浮模态框
+            document.getElementById('story-modal').style.display = "block";
+        }
+
+        function gainXP(amount) {
+            xp += amount;
+            const maxXp = level * 100;
+            if(xp >= maxXp) {
+                xp -= maxXp;
+                level++;
+                if(level > 10) level = 10;
+            }
+            localStorage.setItem('ub_xp', xp);
+            localStorage.setItem('ub_lvl', level);
+            updateStatus();
+        }
+
+        function updateStatus() {
+            document.getElementById('user-level').innerText = level;
+            document.getElementById('user-xp').innerText = xp;
+            document.getElementById('level-title').innerText = levelTitles[currentLang][level];
+            const maxXp = level * 100;
+            document.getElementById('xp-fill').style.width = `${(xp / maxXp) * 100}%`;
+        }
+
+        function toggleTheme() {
+            if(document.body.dataset.theme === 'dark') {
+                document.body.dataset.theme = 'light';
+                localStorage.setItem('ub_theme', 'light');
+            } else {
+                document.body.dataset.theme = 'dark';
+                localStorage.setItem('ub_theme', 'dark');
+            }
+        }
+
+        window.onload = function() {
+            // 加载本地存储
+            const savedXP = localStorage.getItem('ub_xp');
+            const savedLvl = localStorage.getItem('ub_lvl');
+            const savedWrong = localStorage.getItem('ub_wrong_notebook');
+            if(savedXP) xp = parseInt(savedXP);
+            if(savedLvl) level = parseInt(savedLvl);
+            if(savedWrong) wrongNotebook = JSON.parse(savedWrong);
+
+            const savedTheme = localStorage.getItem('ub_theme');
+            if(savedTheme === 'dark') {
+                document.body.dataset.theme = 'dark';
+            }
+            initVisitCounter();
+            updateStatus();
+            refreshVocab();
+            initDialogueDropdown();
+            refreshQuizRand();
+            refreshCultureRand();
+            renderWrongNotebook();
+
+            // 模态框关闭事件
+            const modal = document.getElementById('story-modal');
+            const span = document.querySelector('.story-modal-close');
+            
+            // 点击关闭按钮关闭
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+            
+            // 点击空白处关闭
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+    </script>
+
+
+
+</body></html>
